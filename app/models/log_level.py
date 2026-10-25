@@ -3,9 +3,11 @@ from enum import IntEnum
 
 
 class LogLevel(IntEnum):
+    """Display level, derived by the logger: messages carry no level of their own.
+    ERROR is a command the prosthesis failed to carry out; everything else is INFO."""
+
     INFO = 1
-    WARNING = 2
-    ERROR = 3
+    ERROR = 2
 
     @staticmethod
     def parse_level(value: str) -> LogLevel | None:

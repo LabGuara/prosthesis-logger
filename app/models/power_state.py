@@ -3,8 +3,8 @@ from enum import IntEnum
 
 
 class PowerState(IntEnum):
-    ON = (16, "On")
-    OFF = (17, "Off")
+    ON = (1, "On")
+    OFF = (2, "Off")
 
     label: str
 

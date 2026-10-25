@@ -1,56 +1,42 @@
-# Prothesis MQTT Terminal Logger
+# Prosthesis MQTT Terminal Logger
 
-A Python terminal app that listens to MQTT messages and renders beautiful logs with:
+A Python terminal app that follows the prosthesis' MQTT traffic and renders it as colored log
+lines with timestamps:
 
-- Colors by severity (`INFO`, `WARNING`, `ERROR`)
-- Timestamps
-- Runtime filtering by level, sensor type, and sensor name
+- sensor readings (`prosthesis/logs/validated`), one line per reading;
+- commands sent from the app (`prosthesis/actions/validated`);
+- command feedback from the prosthesis (`prosthesis/actions/feedback/validated`).
 
-## Message format
+## Levels
 
-The MQTT payload must be JSON encoded as string:
+Messages carry no level of their own; the logger derives one for display:
 
-```json
-{
-  "level": "WARNING",
-  "sensor_type": "temperature",
-  "sensor_name": "temp-01"
-}
-```
+- `ERROR`: a command the prosthesis failed to carry out (feedback with `status` `failure`);
+- `INFO`: everything else.
 
-## Installation
-
-```bash
-pip install -e .
-```
+Filtering by `ERROR` therefore shows only failed commands.
 
 ## Run
 
 ```bash
-mqtt-log-listener --broker localhost --port 1883 --topic sensors/logs
+python -m app.main --mqtt_broker localhost --mqtt_port 1883
 ```
 
-No filters are applied if you omit filter flags.
+Optional flags:
 
-## Optional startup filters
+- `--mqtt_logs_topic`, `--mqtt_command_logs_topic`, `--mqtt_command_feedback_topic`
+- `--mqtt_username`, `--mqtt_password`
+- `--min-log-level INFO|ERROR`
+- `--sensor-names Prosthesis,Action,Feedback`
 
-```bash
-mqtt-log-listener \
-  --broker localhost \
-  --topic sensors/logs \
-  --min-level WARNING \
-  --sensor-type temperature \
-  --sensor-name temp-01
-```
+No filters are applied if you omit the filter flags.
 
 ## Runtime controls
 
 - `h` show shortcuts help
-- `0` clear minimum level
-- `1` set minimum level = INFO
-- `2` set minimum level = WARNING
-- `3` set minimum level = ERROR
-- `n` set sensor name filter (comma separated)
+- `1` show everything (minimum level `INFO`)
+- `2` show only failed commands (minimum level `ERROR`)
+- `n` set sensor name filter (comma separated: `Prosthesis`, `Action`, `Feedback`)
 - `c` clear all filters
 - `q` quit
 
@@ -58,14 +44,16 @@ mqtt-log-listener \
 
 You can use `.env` variables:
 
-- `MQTT_BROKER`
+- `MQTT_HOST`
 - `MQTT_PORT`
-- `MQTT_LOGS_PARSED_TOPIC`
-- `MQTT_COMMAND_LOGS_PARSED_TOPIC`
 - `MQTT_USERNAME`
 - `MQTT_PASSWORD`
-- `MQTT_MIN_LEVEL`
-- `MQTT_SENSOR_TYPE`
-- `MQTT_SENSOR_NAME`
+- `MQTT_TLS`
+- `MQTT_LOGS_VALIDATED_TOPIC`
+- `MQTT_COMMAND_LOGS_VALIDATED_TOPIC`
+- `MQTT_POWER_FEEDBACK_VALIDATED_TOPIC`
+- `MQTT_QOS`
+- `MQTT_CLIENT_ID`
+- `MIN_LOG_LEVEL`
 
 CLI values override env values.

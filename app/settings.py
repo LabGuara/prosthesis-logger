@@ -14,6 +14,7 @@ class Settings:
     mqtt_password: str | None
     mqtt_logs_topic: str
     mqtt_command_logs_topic: str
+    mqtt_command_feedback_topic: str
     mqtt_qos: int
     mqtt_client_id: str
     mqtt_tls: bool
@@ -28,6 +29,7 @@ class Settings:
         mqtt_password: str | None,
         mqtt_logs_topic: str | None,
         mqtt_command_logs_topic: str | None,
+        mqtt_command_feedback_topic: str | None,
         mqtt_qos: int,
         mqtt_client_id: str | None,
         min_log_level: LogLevel | None,
@@ -37,8 +39,9 @@ class Settings:
         self.mqtt_port = mqtt_port or int(os.getenv("MQTT_PORT", "1883"))
         self.mqtt_username = mqtt_username or os.getenv("MQTT_USERNAME") or None
         self.mqtt_password = mqtt_password or os.getenv("MQTT_PASSWORD") or None
-        self.mqtt_logs_topic = mqtt_logs_topic or os.getenv("MQTT_LOGS_PARSED_TOPIC", "prothesis/logs/parsed")
-        self.mqtt_command_logs_topic = mqtt_command_logs_topic or os.getenv("MQTT_COMMAND_LOGS_PARSED_TOPIC", "prothesis/actions/parsed")
+        self.mqtt_logs_topic = mqtt_logs_topic or os.getenv("MQTT_LOGS_VALIDATED_TOPIC", "prosthesis/logs/validated")
+        self.mqtt_command_logs_topic = mqtt_command_logs_topic or os.getenv("MQTT_COMMAND_LOGS_VALIDATED_TOPIC", "prosthesis/actions/validated")
+        self.mqtt_command_feedback_topic = mqtt_command_feedback_topic or os.getenv("MQTT_POWER_FEEDBACK_VALIDATED_TOPIC", "prosthesis/actions/feedback/validated")
         self.mqtt_qos = mqtt_qos or int(os.getenv("MQTT_QOS", "1"))
         self.mqtt_client_id = mqtt_client_id or os.getenv("MQTT_CLIENT_ID", "prothesis-logger")
         self.mqtt_tls = os.getenv("MQTT_TLS", "false").lower() == "true"

@@ -62,10 +62,6 @@ class RuntimeController:
                 )
             elif key == "2":
                 self._action_queue.put(
-                    ControlAction(kind="set_min_log_level", value=LogLevel.WARNING.name)
-                )
-            elif key == "3":
-                self._action_queue.put(
                     ControlAction(kind="set_min_log_level", value=LogLevel.ERROR.name)
                 )
             elif key == "n":

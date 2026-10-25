@@ -19,8 +19,6 @@ class TerminalRenderer:
     def _level_style(self, level: LogLevel) -> str:
         if level == LogLevel.INFO:
             return "bold bright_cyan"
-        if level == LogLevel.WARNING:
-            return "bold yellow"
         return "bold white on red"
 
     def print_banner(self, broker: str, port: int, topic: str) -> None:
@@ -40,7 +38,8 @@ class TerminalRenderer:
         self.console.print(
             Panel(
                 "[bold]Runtime keys[/bold]\n"
-                "[cyan]h[/cyan] help | [cyan]1/2/3[/cyan] set minimum log level | "
+                "[cyan]h[/cyan] help | [cyan]1[/cyan] show everything (INFO) | "
+                "[cyan]2[/cyan] only failed commands (ERROR) | "
                 "[cyan]c[/cyan] clear filters | [cyan]q[/cyan] quit",
                 border_style="blue",
                 title="Controls",

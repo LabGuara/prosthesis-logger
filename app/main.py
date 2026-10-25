@@ -30,6 +30,9 @@ def main(
     mqtt_command_logs_topic: str | None = typer.Option(
         None, "--mqtt_command_logs_topic", help="MQTT command logs topic subscription"
     ),
+    mqtt_command_feedback_topic: str | None = typer.Option(
+        None, "--mqtt_command_feedback_topic", help="MQTT command feedback topic subscription"
+    ),
     mqtt_username: str | None = typer.Option(
         None, "--mqtt_username", help="MQTT username"
     ),
@@ -39,7 +42,7 @@ def main(
     min_log_level: str | None = typer.Option(
         None,
         "--min-log-level",
-        help="Minimum log level filter: INFO|WARNING|ERROR",
+        help="Minimum log level filter: INFO (everything) | ERROR (only failed commands)",
     ),
     sensor_names: str | None = typer.Option(
         None,
@@ -54,6 +57,7 @@ def main(
         mqtt_password=mqtt_password,
         mqtt_logs_topic=mqtt_logs_topic,
         mqtt_command_logs_topic=mqtt_command_logs_topic,
+        mqtt_command_feedback_topic=mqtt_command_feedback_topic,
         mqtt_qos=1,
         mqtt_client_id=None,
         min_log_level=LogLevel.parse_level(min_log_level) if min_log_level else None,
@@ -94,6 +98,7 @@ def main(
             port=settings.mqtt_port,
             logs_topic=settings.mqtt_logs_topic,
             command_logs_topic=settings.mqtt_command_logs_topic,
+            command_feedback_topic=settings.mqtt_command_feedback_topic,
             username=settings.mqtt_username,
             password=settings.mqtt_password,
             qos=settings.mqtt_qos,
@@ -121,7 +126,12 @@ def main(
             except Empty:
                 continue
 
-            events, parse_error = parse_event_payload(topic=topic_name, payload=payload)
+            events, parse_error = parse_event_payload(
+                topic=topic_name,
+                payload=payload,
+                command_topic=settings.mqtt_command_logs_topic,
+                command_feedback_topic=settings.mqtt_command_feedback_topic,
+            )
             if parse_error is not None:
                 renderer.print_parse_error(parse_error)
                 continue
@@ -169,7 +179,7 @@ def _drain_controls(
         if action.kind == "set_min_log_level":
             level = LogLevel.parse_level(action.value or "") if action.value else None
             filters.set_min_log_level(level)
-            label = level.value if level else "none"
+            label = level.name if level else "none"
             renderer.print_system(
                 f"Minimum log level set to {label}", style="bold cyan"
             )
