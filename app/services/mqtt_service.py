@@ -82,11 +82,6 @@ class MqttService:
             self._on_system(f"Disconnected unexpectedly (reason_code={reason_code})")
 
     def _configure_tls(self) -> None:
-        """
-        Configure TLS settings based on MQTT_TLS environment variable and port.
-
-        TLS is enabled if MQTT_TLS environment variable is set to 'true'
-        """
         if self._settings.tls_enabled:
             self._client.tls_set()
 

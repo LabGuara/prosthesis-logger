@@ -21,8 +21,6 @@ def parse_event_payload(
     command_topic: str,
     command_feedback_topic: str,
 ) -> ParsedResult:
-    """Turns a message into events. The level is not part of any message: it is derived here,
-    ERROR for a command the prosthesis failed to carry out and INFO for everything else."""
     if topic == command_topic:
         return _parse_command(topic, payload)
     if topic == command_feedback_topic:
