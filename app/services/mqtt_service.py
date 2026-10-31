@@ -57,7 +57,6 @@ class MqttService:
             self._client.loop_stop()
             self._client.disconnect()
         except Exception:
-            # Cleanup should never crash shutdown.
             pass
 
     def _on_connect(self, client: mqtt.Client, *_args) -> None:

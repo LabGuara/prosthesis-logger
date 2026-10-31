@@ -57,7 +57,6 @@ def _parse_sensor_batch(topic: str, payload: str) -> ParsedResult:
     except json.JSONDecodeError as exc:
         return _error(f"invalid json: {exc.msg}", topic, payload)
 
-    # The orchestrator publishes {"run_id": "...", "value": [ ... ]}; a bare array is accepted too.
     if isinstance(parsed, dict) and isinstance(parsed.get("value"), list):
         readings = parsed["value"]
     elif isinstance(parsed, list):

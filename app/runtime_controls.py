@@ -9,7 +9,6 @@ from typing import Callable
 
 from app.models.log_level import LogLevel
 
-# Conditional imports for Unix/Linux systems only
 if not sys.platform.startswith("win"):
     import select
     import termios
@@ -82,7 +81,6 @@ def _read_single_key_nonblocking() -> str | None:
             return key.lower()
         return None
 
-    # Unix/Linux specific code
     try:
         fd = sys.stdin.fileno()
         old_settings = termios.tcgetattr(fd)  # type: ignore
